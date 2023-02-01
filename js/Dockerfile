@@ -1,0 +1,9 @@
+FROM node:19
+
+ARG PROJECT_DIR=/opt/project
+
+COPY . "${PROJECT_DIR}"
+WORKDIR "${PROJECT_DIR}"
+
+RUN npm i
+

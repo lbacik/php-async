@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  sleeping:
+    build: "https://github.com/lbacik/sleeping-server.git#main"
+
+  php:
+    build: ./php
+    environment:
+      SLEEPING_URL: "http://sleeping:3000"
+    depends_on:
+      - sleeping
+    entrypoint:
+      - /bin/bash
+      - -c
+      - time php bin/fetch_seq.php $0 $@
+
+  js:
+    build: ./js
+    environment:
+      SLEEPING_URL: "http://sleeping:3000"
+    depends_on:
+      - sleeping
+    entrypoint:
+      - /bin/bash
+      - -c
+      - time node fetch_seq.js $@
+
