@@ -8,21 +8,14 @@ $multi = curl_multi_init();
 
 $stillRunning = null;
 
-$active = [];
-for ($i = 1; $i <= 100; $i++) {
-    $curl = curl_init($sleepingUrl);
+for ($i = 0; $i <= 3; $i++) {
+    $curl = curl_init("{$sleepingUrl}/{$i}");
     curl_multi_add_handle($multi, $curl);
 }
 
 do {
-    $ret = curl_multi_exec($multi, $stillRunning);
-} while ($ret == CURLM_CALL_MULTI_PERFORM);
-
-while ($stillRunning && $ret === CURLM_OK) {
-    if (curl_multi_select($multi) != -1) {
-        do {
-            $mrc = curl_multi_exec($multi, $stillRunning);
-        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+    $status = curl_multi_exec($multi, $stillRunning);
+    if ($stillRunning) {
+        curl_multi_select($multi);
     }
-}
-
+} while ($stillRunning && $status == CURLM_OK);
